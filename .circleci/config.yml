@@ -24,27 +24,3 @@ jobs:
           key: v1-dependencies-{{ checksum "package.json" }}
 
       - run: npm test
-
-    deploy:
-      machine:
-        enabled: true
-      steps:
-        - add-ssh-keys:
-            fingerprints:
-              - "ad:94:65:40:af:76:e2:28:11:8a:fc:1d:51:b1:8a:f2"
-        - run:
-            name: Deploy Over SSH
-            command: |
-              ssh $SSH_USER@$SSH_HOST "cd /c/DarkHorse/University/IT4883/recurrent-task-service && npm install && cd .. && ./shut-down.bat && cd recurrent-task-service && npm run build && npm start"
-
-workflows:
-  version: 2
-  build-and-deploy:
-    jobs:
-      - build
-      - deploy:
-          requires:
-            - build
-          filters:
-            branches:
-              only: master
