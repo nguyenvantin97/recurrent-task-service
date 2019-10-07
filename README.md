@@ -1,5 +1,9 @@
 # Recurrent Task Service
 
+[![Dependencies](https://david-dm.org/huy-ta/recurrent-task-service/master/status.svg)](https://david-dm.org/huy-ta/recurrent-task-service/master)
+[![DevDependencies](https://david-dm.org/huy-ta/recurrent-task-service/master/dev-status.svg)](https://david-dm.org/huy-ta/recurrent-task-service/master?type=dev)
+[![PeerDependencies](https://david-dm.org/huy-ta/recurrent-task-service/master/peer-status.svg)](https://david-dm.org/huy-ta/recurrent-task-service/master?type=peer)
+![Code style](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)
 [![CircleCI](https://circleci.com/gh/huy-ta/recurrent-task-service.svg?style=svg)](https://circleci.com/gh/huy-ta/recurrent-task-service)
 
 - Live Demo: nostri.serveo.net
