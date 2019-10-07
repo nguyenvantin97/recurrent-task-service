@@ -1,5 +1,7 @@
 # Recurrent Task Service
 
+[![CircleCI](https://circleci.com/gh/huy-ta/recurrent-task-service.svg?style=svg)](https://circleci.com/gh/huy-ta/recurrent-task-service)
+
 - Live Demo: nostri.serveo.net
 
 - Version: 1.0
