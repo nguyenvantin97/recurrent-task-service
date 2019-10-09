@@ -24,3 +24,27 @@ jobs:
           key: v1-dependencies-{{ checksum "package.json" }}
 
       - run: npm test
+
+  deploy:
+    machine:
+      enabled: true
+    steps:
+      - add_ssh_keys:
+          fingerprints:
+            - "b5:46:e9:91:2b:c2:01:0b:0a:b3:47:b5:b2:d0:19:89"
+      - run:
+          name: Deploy over SSH
+          command: |
+            ssh -vvv -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST -p $SSH_PORT "cd /root/.ssh && ls"
+
+workflows:
+  version: 2
+  build-and-deploy:
+    jobs:
+      - build
+      - deploy:
+          requires:
+            - build
+          filters:
+            branches:
+              only: master
