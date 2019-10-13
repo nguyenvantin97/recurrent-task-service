@@ -35,7 +35,10 @@ jobs:
       - run:
           name: Deploy over SSH
           command: |
-            ssh -vvv -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST -p $SSH_PORT "cd /root/.ssh && ls"
+            ssh -v -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST -p $SSH_PORT "cd $APP_PATH &&
+              docker-compose down &&
+              docker-compose build --force-rm --no-cache &&
+              docker-compose up -d"
 
 workflows:
   version: 2
