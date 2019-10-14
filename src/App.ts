@@ -1,5 +1,5 @@
 import fastify from 'fastify';
-import Routes from './routes/Routes';
+import Routes from '@routes/Routes';
 
 class App {
   public fastifyApp: fastify.FastifyInstance;

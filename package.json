@@ -15,7 +15,8 @@
   },
   "dependencies": {
     "fastify": "^2.9.0",
-    "pino-pretty": "^3.2.1"
+    "pino-pretty": "^3.2.1",
+    "swagger-jsdoc": "^3.4.0"
   },
   "devDependencies": {
     "@types/node": "^12.7.11",
