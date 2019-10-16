@@ -47,7 +47,7 @@ class App {
 
     const swaggerDocOptions = {
       swaggerDefinition,
-      apis: ['**/*.ts']
+      apis: ['**/*.yml', '**/*.ts']
     };
 
     this.swaggerSpec = swaggerJSDoc(swaggerDocOptions);

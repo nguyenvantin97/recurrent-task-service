@@ -10,10 +10,10 @@ class HelloController extends BaseController {
        * /api/hello:
        *   get:
        *     tags:
-       *       - "hello"
-       *     description: Returns a "Hello World" message
+       *     - "hello"
+       *     description: "Returns a \"Hello World\" message"
        *     produces:
-       *       - application/json
+       *     - "application/json"
        *     responses:
        *       200:
        *         description: "\"Hello World\" message successfully sent"

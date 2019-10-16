@@ -1,0 +1,30 @@
+definitions:
+  SimpleUser:
+    description: "A simple model representing brief information about a user managed by the User Microservice"
+    type: "object"
+    required:
+    - "uid"
+    - "name"
+    properties:
+      uid: 
+        type: "string"
+        example: "73936b96-03c1-4544-a858-a39deb469576"
+      name:
+        type: "string"
+        example: "Huy Ta Quoc"
+      email:
+        type: "string"
+        example: "quochuy.tl.bk@gmail.com"
+  RecurrentTask:
+    description: "A model representing a recurrent task managed by this microservice"
+    allOf:
+      - type: "object"
+        required:
+        - "uid"
+        properties:
+          uid:
+            type: "string"
+            format: "uuidv4"
+          creator:
+            $ref: "#/definitions/SimpleUser"
+      - $ref: "#/definitions/CreateRecurrentTaskRequestBody"
