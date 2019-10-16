@@ -6,10 +6,10 @@
 ![Code style](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)
 [![CircleCI](https://circleci.com/gh/huy-ta/recurrent-task-service.svg?style=svg)](https://circleci.com/gh/huy-ta/recurrent-task-service)
 
-- Live Demo: cerno.serveo.net
+- Live Demo: https://falling-frog-38743.pktriot.net
 
 - Version: 0.0.1
-- Last updated: Oct 5th, 2019.
+- Last updated: Oct 16th, 2019.
 
 ## Useful Resources
 
