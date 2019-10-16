@@ -5,6 +5,10 @@
   "main": "src/index.js",
   "author": "Huy",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/huy-ta/recurrent-task-service"
+  },
   "scripts": {
     "build": "npm run build-ts && npm run tslint",
     "start": "node -r ./tsconfig-paths-bootstrap.js dist/index.js",
