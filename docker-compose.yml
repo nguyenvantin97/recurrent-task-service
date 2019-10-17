@@ -12,8 +12,16 @@ services:
     environment:
       HOST: 0.0.0.0 
       PORT: 8080
+      MONGO_URI: "mongodb://mongo:27017/rtms"
     ports:
       - '8080:8080'
+    networks:
+      - app_network
+
+  mongo:
+    image: mongo:4.2
+    ports:
+      - '27017:27017'
     networks:
       - app_network
 

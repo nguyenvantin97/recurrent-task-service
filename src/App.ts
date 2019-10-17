@@ -3,6 +3,7 @@ import { ServerResponse } from 'http';
 import path from 'path';
 import swaggerJSDoc from 'swagger-jsdoc';
 import fastifyStatic from 'fastify-static';
+import mongoose from 'mongoose';
 
 import APIRoutes from '@routes/Routes';
 
@@ -33,7 +34,15 @@ class App {
   }
 
   private async connectToDatabase(): Promise<any> {
+    const mongoURI = process.env.MONGO_URI || 'mongodb://localhost:27017/rtms';
 
+    try {
+      this.fastifyApp.log.info('Connecting to MongoDB...');
+      await mongoose.connect(mongoURI, { useUnifiedTopology: true, useNewUrlParser: true });
+      this.fastifyApp.log.info('MongoDB connected.');
+    } catch (err) {
+      this.fastifyApp.log.error('Could not connect to MongoDB.', err);
+    }
   }
 
   private setUpSwagger() {

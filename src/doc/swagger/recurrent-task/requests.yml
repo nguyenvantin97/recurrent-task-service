@@ -24,8 +24,10 @@ definitions:
           $ref: "#/definitions/SimpleUser"
       reviewer:
         $ref: "#/definitions/SimpleUser"
-      label:
-        $ref: "#/definitions/Label"
+      labelIDs:
+        type: "array"
+        items:
+          type: "string"
       start:
         type: "string"
         format: "date-time"
