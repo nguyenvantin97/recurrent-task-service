@@ -20,11 +20,10 @@ definitions:
     allOf:
       - type: "object"
         required:
-        - "uid"
+        - "id"
         properties:
-          uid:
+          id:
             type: "string"
-            format: "uuidv4"
           creator:
             $ref: "#/definitions/SimpleUser"
       - $ref: "#/definitions/CreateRecurrentTaskRequestBody"

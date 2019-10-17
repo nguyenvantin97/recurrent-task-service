@@ -1,6 +1,7 @@
 import { RouteOptions, FastifyRequest, FastifyReply } from 'fastify';
 import { ServerResponse } from 'http';
 import BaseController from '@routes/BaseController';
+import LabelModel from '@models/Label';
 
 class LabelController extends BaseController {
   public getRoutes(): RouteOptions[] {
@@ -40,7 +41,7 @@ class LabelController extends BaseController {
       },
       /**
        * @swagger
-       * /api/labels/:labelUID:
+       * /api/labels/:labelID:
        *   get:
        *     tags:
        *     - "labels"
@@ -62,12 +63,12 @@ class LabelController extends BaseController {
        */
       {
         method: 'GET',
-        url: '/:labelUID',
+        url: '/:labelID',
         handler: this.getLabel
       },
       /**
        * @swagger
-       * /api/labels/:labelUID:
+       * /api/labels/:labelID:
        *   put:
        *     tags:
        *     - "labels"
@@ -103,12 +104,12 @@ class LabelController extends BaseController {
        */
       {
         method: 'PUT',
-        url: '/:labelUID',
+        url: '/:labelID',
         handler: this.updateLabel
       },
       /**
        * @swagger
-       * /api/labels/:labelUID:
+       * /api/labels/:labelID:
        *   delete:
        *     tags:
        *     - "labels"
@@ -127,7 +128,7 @@ class LabelController extends BaseController {
        */
       {
         method: 'DELETE',
-        url: '/:labelUID',
+        url: '/:labelID',
         handler: this.deleteLabel
       },
       /**
@@ -178,20 +179,101 @@ class LabelController extends BaseController {
     ];
   }
 
-  private createLabel(request: FastifyRequest, reply: FastifyReply<ServerResponse>): void {
-    reply.send({ message: 'It has not been implemented yet.' });    
+  private async createLabel(request: FastifyRequest, reply: FastifyReply<ServerResponse>): Promise<any> {
+    const { name, color } = request.body;
+
+    if (!name || !color) {
+      return reply.status(400).send({
+        code: 400,
+        error: 'Bad Request',
+        message: 'Either the \'name\' field or the \'color\' field is missing'
+      });
+    }
+
+    const newLabel = new LabelModel({ name, color });
+
+    await newLabel.save();
+
+    reply.send({
+      id: newLabel._id,
+      name: newLabel.name,
+      color: newLabel.color
+    });
   }
 
-  private getLabel(request: FastifyRequest, reply: FastifyReply<ServerResponse>): void {
-    reply.send({ message: 'It has not been implemented yet.' });
+  private async getLabel(request: FastifyRequest, reply: FastifyReply<ServerResponse>): Promise<any> {
+    const label = await LabelModel.findById(request.params.labelID);
+
+    if (!label) {
+      return reply.status(404).send({
+        statusCode: 404,
+        error: 'Not Found',
+        message: 'Label with the requested ID was not found'
+      });
+    }
+
+    reply.send({
+      id: label._id,
+      name: label.name,
+      color: label.color
+    });
   }
 
-  private updateLabel(request: FastifyRequest, reply: FastifyReply<ServerResponse>): void {
-    reply.send({ message: 'It has not been implemented yet.' });
+  private async updateLabel(request: FastifyRequest, reply: FastifyReply<ServerResponse>): Promise<any> {
+    const label = await LabelModel.findById(request.params.labelID);
+
+    if (!label) {
+      return reply.status(404).send({
+        statusCode: 404,
+        error: 'Not Found',
+        message: 'Label with the requested ID was not found'
+      });
+    }
+
+    const { name, color } = request.body;
+
+    let isLabelUpdated = false;
+
+    if (name && name !== label.name) {
+      label.name = name;
+      isLabelUpdated = true;
+    }
+
+    if (color && color !== label.color) {
+      label.color = color;
+      isLabelUpdated = true;
+    }
+
+    if (!isLabelUpdated) {
+      return reply.status(304).send({
+        statusCode: 304,
+        message: 'The requested label was not modified'
+      });
+    }
+
+    await label.save();
+
+    reply.send({
+      id: label._id,
+      name: label.name,
+      color: label.color
+    });
   }
 
-  private deleteLabel(request: FastifyRequest, reply: FastifyReply<ServerResponse>): void {
-    reply.send({ message: 'It has not been implemented yet.' });
+  private async deleteLabel(request: FastifyRequest, reply: FastifyReply<ServerResponse>): Promise<any> {
+    const label = await LabelModel.findById(request.params.labelID);
+
+    if (!label) {
+      return reply.status(404).send({
+        statusCode: 404,
+        error: 'Not Found',
+        message: 'Label with the requested ID was not found'
+      });
+    }
+
+    await LabelModel.findOneAndDelete({ _id: request.params.labelID });
+
+    reply.status(200).send();
   }
 
   private searchLabels(request: FastifyRequest, reply: FastifyReply<ServerResponse>): void {

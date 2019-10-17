@@ -13,7 +13,8 @@
     "paths": {
       "*": ["node_modules/*", "src/types/*"],
       "@utils/*": ["src/utils/*"],
-      "@routes/*": ["src/routes/*"]
+      "@routes/*": ["src/routes/*"],
+      "@models/*": ["src/models/*"]
     },
     "lib": ["es2017", "dom"]
   },

@@ -40,7 +40,7 @@ class RecurrentTaskController extends BaseController {
       },
       /**
        * @swagger
-       * /api/recurrent-tasks/:recurrentTaskUID:
+       * /api/recurrent-tasks/:recurrentTaskID:
        *   get:
        *     tags:
        *     - "recurrent-tasks"
@@ -62,12 +62,12 @@ class RecurrentTaskController extends BaseController {
        */
       {
         method: 'GET',
-        url: '/:recurrentTaskUID',
+        url: '/:recurrentTaskID',
         handler: this.getRecurrentTask
       },
       /**
        * @swagger
-       * /api/recurrent-tasks/:recurrentTaskUID:
+       * /api/recurrent-tasks/:recurrentTaskID:
        *   put:
        *     tags:
        *     - "recurrent-tasks"
@@ -103,12 +103,12 @@ class RecurrentTaskController extends BaseController {
        */
       {
         method: 'PUT',
-        url: '/:recurrentTaskUID',
+        url: '/:recurrentTaskID',
         handler: this.updateRecurrentTask
       },
       /**
        * @swagger
-       * /api/recurrent-tasks/:recurrentTaskUID:
+       * /api/recurrent-tasks/:recurrentTaskID:
        *   delete:
        *     tags:
        *     - "recurrent-tasks"
@@ -127,7 +127,7 @@ class RecurrentTaskController extends BaseController {
        */
       {
         method: 'DELETE',
-        url: '/:recurrentTaskUID',
+        url: '/:recurrentTaskID',
         handler: this.deleteRecurrentTask
       },
       /**
