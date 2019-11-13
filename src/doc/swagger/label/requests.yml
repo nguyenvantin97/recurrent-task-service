@@ -1,0 +1,32 @@
+definitions:
+  UpdateLabelRequestBody:
+    description: "A model representing a request body to update a label"
+    type: "object"
+    properties:
+      name:
+        type: "string"
+        example: "Frontend"
+      color:
+        type: "string"
+        example: "#000000"
+  CreateLabelRequestBody:
+    description: "A model representing a request body to create a label"
+    allOf:
+      - $ref: "#/definitions/UpdateLabelRequestBody"
+      - type: "object"
+        required:
+        - "name"
+        - "color"
+  SearchLabelRequestBody:
+    description: "A model representing a request body to search for labels"
+    type: "object"
+    properties:
+      query:
+        type: "string"
+        example: "frontend"
+      name:
+        type: "string"
+        example: "frontend"
+      color:
+        type: "string"
+        example: "#000000"

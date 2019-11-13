@@ -1,0 +1,3 @@
+tags:
+- name: "labels"
+  description: "Operations (CRUD) on labels"
