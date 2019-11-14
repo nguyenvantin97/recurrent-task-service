@@ -12,13 +12,23 @@ const RecurrentTaskStatus = {
   ]
 };
 
+const RecurrentTaskType = {
+  description: 'The type of a recurrent task',
+  type: 'string',
+  enum: [
+    'individual',
+    'department'
+  ]
+};
+
 const RecurrentTask = {
   description: 'A recurrent task',
   type: 'object',
   required: [
     '_id',
     'name',
-    'description'
+    'description',
+    'type'
   ],
   properties: {
     _id: {
@@ -33,12 +43,18 @@ const RecurrentTask = {
       type: 'string',
       example: 'Every day, employees need to make sure the quality of all drug products are good.'
     },
-    doers: {
+    doer: CommonSchemaModels.SimpleUser,
+    coDoers: {
       type: 'array',
       items: CommonSchemaModels.SimpleUser
     },
     reviewer: CommonSchemaModels.SimpleUser,
     creator: CommonSchemaModels.SimpleUser,
+    department: CommonSchemaModels.SimpleDepartment,
+    coDepartments: {
+      type: 'array',
+      items: CommonSchemaModels.SimpleDepartment
+    },
     labelIds: {
       type: 'array',
       items: {
@@ -61,6 +77,17 @@ const RecurrentTask = {
       format: 'date-time',
       description: 'Date in UTC when the task is due'
     },
+    comment: {
+      type: 'string',
+      example: 'This task is gonna need twice the time of an ordinary task.'
+    },
+    percentComplete: {
+      type: 'integer',
+      minimum: 0,
+      maximum: 100,
+      example: 50
+    },
+    type: RecurrentTaskType,
     status: RecurrentTaskStatus
   }
 };

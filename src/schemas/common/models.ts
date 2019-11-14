@@ -2,11 +2,11 @@ const SimpleUser = {
   description: 'Brief information about a user',
   type: 'object',
   required: [
-    'uid',
+    'id',
     'name'
   ],
   properties: {
-    uid: {
+    id: {
       type: 'string',
       example: '73936b96-03c1-4544-a858-a39deb469576'
     },
@@ -31,7 +31,27 @@ const ListOfUserEmails = {
   }
 };
 
+const SimpleDepartment = {
+  description: 'Brief information about a department',
+  type: 'object',
+  required: [
+    'id',
+    'name'
+  ],
+  properties: {
+    id: {
+      type: 'string',
+      example: '23936b96-02d4-3322-b848-a39deb469543'
+    },
+    name: {
+      type: 'string',
+      example: 'Personnel Deparment'
+    }
+  }
+};
+
 export default {
   SimpleUser,
-  ListOfUserEmails
+  ListOfUserEmails,
+  SimpleDepartment
 };
