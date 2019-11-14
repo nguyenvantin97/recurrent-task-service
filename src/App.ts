@@ -1,5 +1,4 @@
 import fastify from 'fastify';
-import swaggerJSDoc from 'swagger-jsdoc';
 import fastifySwagger from 'fastify-swagger';
 import mongoose from 'mongoose';
 
@@ -11,7 +10,6 @@ import LabelSchemaModels from '@schemas/label/models';
 class App {
   public fastifyApp: fastify.FastifyInstance;
   public apiRoutes: APIRoutes;
-  public swaggerSpec: swaggerJSDoc;
 
   constructor() {
     this.fastifyApp = fastify({
@@ -53,7 +51,7 @@ class App {
       swagger: {
         info: {
           title: 'Recurrent Task Microservice - API Documentation',
-          version: '0.0.1',
+          version: '0.0.2',
           description: 'This is the API documentation for the microservice managing recurrent tasks.'
         },
         consumes: ['application/json'],
