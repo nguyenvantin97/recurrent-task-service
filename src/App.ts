@@ -1,11 +1,12 @@
-import fastify, { FastifyReply } from 'fastify';
-import { ServerResponse } from 'http';
-import path from 'path';
+import fastify from 'fastify';
 import swaggerJSDoc from 'swagger-jsdoc';
-import fastifyStatic from 'fastify-static';
+import fastifySwagger from 'fastify-swagger';
 import mongoose from 'mongoose';
 
 import APIRoutes from '@routes/Routes';
+import CommonSchemaTags from '@schemas/common/tags';
+import RecurrentTaskSchemaModels from '@schemas/recurrent-task/models';
+import LabelSchemaModels from '@schemas/label/models';
 
 class App {
   public fastifyApp: fastify.FastifyInstance;
@@ -46,32 +47,31 @@ class App {
   }
 
   private setUpSwagger() {
-    const swaggerDefinition = {
-      info: {
-        title: 'Recurrent Task Microservice - API Documentation',
-        version: '0.0.1',
-        description: 'This is the API documentation for the microservice managing recurrent tasks.'
-      }
-    };
+    this.fastifyApp.log.info('Generating Swagger Docs...');
 
-    const swaggerDocOptions = {
-      swaggerDefinition,
-      apis: ['**/*.yml', '**/*.ts']
-    };
-
-    this.swaggerSpec = swaggerJSDoc(swaggerDocOptions);
-
-    this.fastifyApp.get('/swagger.json', (request, reply: FastifyReply<ServerResponse>) => {
-      reply.send(this.swaggerSpec); 
+    this.fastifyApp.register(fastifySwagger, {
+      swagger: {
+        info: {
+          title: 'Recurrent Task Microservice - API Documentation',
+          version: '0.0.1',
+          description: 'This is the API documentation for the microservice managing recurrent tasks.'
+        },
+        consumes: ['application/json'],
+        produces: ['application/json'],
+        tags: CommonSchemaTags,
+        definitions: {
+          RecurrentTask: RecurrentTaskSchemaModels.RecurrentTask,
+          Label: LabelSchemaModels.Label
+        }
+      },
+      exposeRoute: true,
+      routePrefix: '/api-docs'
     });
+
+    this.fastifyApp.log.info('Swagger Docs is successfully generated and available at /api-docs.');
   }
 
   private setUpAPIRoutes(): void {
-    this.fastifyApp.register(fastifyStatic, {
-      root: path.join(__dirname, '..', 'public'),
-      redirect: true
-    });
-
     this.apiRoutes.initialize();
   }
 }

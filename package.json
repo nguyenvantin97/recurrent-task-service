@@ -20,10 +20,9 @@
   "dependencies": {
     "@typegoose/typegoose": "^6.0.3",
     "fastify": "^2.9.0",
-    "fastify-static": "^2.5.0",
+    "fastify-swagger": "^2.4.0",
     "mongoose": "^5.7.5",
-    "pino-pretty": "^3.2.1",
-    "swagger-jsdoc": "^3.4.0"
+    "pino-pretty": "^3.2.1"
   },
   "devDependencies": {
     "@types/node": "^12.7.11",

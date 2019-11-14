@@ -11,10 +11,11 @@
     "baseUrl": ".",
     "noImplicitAny": false,
     "paths": {
-      "*": ["node_modules/*", "src/types/*"],
+      "*": ["node_modules/*"],
       "@utils/*": ["src/utils/*"],
       "@routes/*": ["src/routes/*"],
-      "@models/*": ["src/models/*"]
+      "@models/*": ["src/models/*"],
+      "@schemas/*": ["src/schemas/*"]
     },
     "lib": ["es2017", "dom"]
   },

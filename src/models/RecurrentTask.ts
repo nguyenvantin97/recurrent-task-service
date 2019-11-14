@@ -1,24 +1,7 @@
 import { prop, arrayProp, getModelForClass, Ref } from '@typegoose/typegoose';
 import { Label } from './Label';
-
-class SimpleUser {
-  @prop({ required: true })
-  public uid!: string;
-
-  @prop({ required: true })
-  public name!: string;
-
-  @prop()
-  public email?: string;
-}
-
-enum RecurrentTaskStatus {
-  PENDING = 'pending',
-  DOING = 'doing',
-  FINISHED = 'finished',
-  OVERDUE = 'overdue',
-  CANCELLED = 'cancelled'
-}
+import RecurrentTaskStatus from './enums/RecurrentTaskStatus';
+import SimpleUser from './pojo/SimpleUser';
 
 class RecurrentTask {
   @prop({ required: true })
