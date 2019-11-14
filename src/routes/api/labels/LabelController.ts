@@ -96,14 +96,6 @@ class LabelController extends BaseController {
   private async createLabel(request: FastifyRequest, reply: FastifyReply<ServerResponse>): Promise<any> {
     const { name, color } = request.body;
 
-    if (!name || !color) {
-      return reply.status(400).send({
-        code: 400,
-        error: 'Bad Request',
-        message: 'Either the \'name\' field or the \'color\' field is missing'
-      });
-    }
-
     const newLabel = new LabelModel({ name, color });
 
     await newLabel.save();
@@ -118,14 +110,6 @@ class LabelController extends BaseController {
   private async getLabel(request: FastifyRequest, reply: FastifyReply<ServerResponse>): Promise<any> {
     const label = await LabelModel.findById(request.params.labelID);
 
-    if (!label) {
-      return reply.status(404).send({
-        statusCode: 404,
-        error: 'Not Found',
-        message: 'Label with the requested ID was not found'
-      });
-    }
-
     reply.send({
       id: label._id,
       name: label.name,
@@ -135,14 +119,6 @@ class LabelController extends BaseController {
 
   private async updateLabel(request: FastifyRequest, reply: FastifyReply<ServerResponse>): Promise<any> {
     const label = await LabelModel.findById(request.params.labelID);
-
-    if (!label) {
-      return reply.status(404).send({
-        statusCode: 404,
-        error: 'Not Found',
-        message: 'Label with the requested ID was not found'
-      });
-    }
 
     const { name, color } = request.body;
 
