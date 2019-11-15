@@ -6,6 +6,8 @@ import RecurrentTaskSchemaRequests from '@schemas/recurrent-task/requests';
 import CommonSchemaRequests from '@schemas/common/requests';
 import CommonSchemaResponses from '@schemas/common/responses';
 import { TAGS } from '@schemas/common/tags';
+import RecurrentTaskModel from '@models/RecurrentTask';
+import NotFound404 from '@models/responses/NotFound404';
 
 class RecurrentTaskController extends BaseController {
   public getRoutes(): RouteOptions[] {
@@ -26,7 +28,7 @@ class RecurrentTaskController extends BaseController {
       },
       {
         method: 'GET',
-        url: '/:recurrentTaskID',
+        url: '/:recurrentTaskId',
         handler: this.getRecurrentTask,
         schema: {
           tags: [TAGS.RECURRENT_TASKS],
@@ -41,7 +43,7 @@ class RecurrentTaskController extends BaseController {
       },
       {
         method: 'PUT',
-        url: '/:recurrentTaskID',
+        url: '/:recurrentTaskId',
         handler: this.updateRecurrentTask,
         schema: {
           tags: [TAGS.RECURRENT_TASKS],
@@ -57,7 +59,7 @@ class RecurrentTaskController extends BaseController {
       },
       {
         method: 'DELETE',
-        url: '/:recurrentTaskID',
+        url: '/:recurrentTaskId',
         handler: this.deleteRecurrentTask,
         schema: {
           tags: [TAGS.RECURRENT_TASKS],
@@ -112,20 +114,50 @@ class RecurrentTaskController extends BaseController {
     ];
   }
 
-  private createRecurrentTask(request: FastifyRequest, reply: FastifyReply<ServerResponse>): void {
-    reply.send({ message: 'It has not been implemented yet.' });    
+  private async createRecurrentTask(request: FastifyRequest, reply: FastifyReply<ServerResponse>): Promise<any> {
+    const newRecurrentTask = new RecurrentTaskModel(request.body);
+
+    await newRecurrentTask.save();
+
+    reply.send(newRecurrentTask);
   }
 
-  private getRecurrentTask(request: FastifyRequest, reply: FastifyReply<ServerResponse>): void {
-    reply.send({ message: 'It has not been implemented yet.' });
+  private async getRecurrentTask(request: FastifyRequest, reply: FastifyReply<ServerResponse>): Promise<any> {
+    const recurrentTask = await RecurrentTaskModel.findById(request.params.recurrentTaskId);
+
+    if (!recurrentTask) {
+      return reply.status(404).send(NotFound404.generate(`Recurrent task with the requested ID '${request.params.recurrentTaskId}' was not found`));
+    }
+
+    reply.send(recurrentTask);
   }
 
-  private updateRecurrentTask(request: FastifyRequest, reply: FastifyReply<ServerResponse>): void {
-    reply.send({ message: 'It has not been implemented yet.' });
+  private async updateRecurrentTask(request: FastifyRequest, reply: FastifyReply<ServerResponse>): Promise<any> {
+    const recurrentTask = await RecurrentTaskModel.findById(request.params.recurrentTaskId);
+
+    if (!recurrentTask) {
+      return reply.status(404).send(NotFound404.generate(`Recurrent task with the requested ID '${request.params.recurrentTaskId}' was not found`));
+    }
+
+    Object.keys(request.body).forEach(fieldToUpdate => {
+      recurrentTask[fieldToUpdate] = request.body[fieldToUpdate];
+    });
+
+    await recurrentTask.save();
+
+    reply.send(recurrentTask);
   }
 
-  private deleteRecurrentTask(request: FastifyRequest, reply: FastifyReply<ServerResponse>): void {
-    reply.send({ message: 'It has not been implemented yet.' });
+  private async deleteRecurrentTask(request: FastifyRequest, reply: FastifyReply<ServerResponse>): Promise<any> {
+    const recurrentTask = await RecurrentTaskModel.findById(request.params.recurrentTaskId);
+
+    if (!recurrentTask) {
+      return reply.status(404).send(NotFound404.generate(`Recurrent task with the requested ID '${request.params.recurrentTaskId}' was not found`));
+    }
+
+    await RecurrentTaskModel.findOneAndDelete({ _id: request.params.recurrentTaskId });
+
+    reply.status(200);
   }
 
   private searchRecurrentTasks(request: FastifyRequest, reply: FastifyReply<ServerResponse>): void {

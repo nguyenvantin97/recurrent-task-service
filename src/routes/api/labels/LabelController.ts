@@ -7,6 +7,7 @@ import LabelSchemaRequests from '@schemas/label/requests';
 import CommonSchemaRequests from '@schemas/common/requests';
 import CommonSchemaResponses from '@schemas/common/responses';
 import { TAGS } from '@schemas/common/tags';
+import NotFound404 from '@models/responses/NotFound404';
 
 class LabelController extends BaseController {
   public getRoutes(): RouteOptions[] {
@@ -27,7 +28,7 @@ class LabelController extends BaseController {
       },
       {
         method: 'GET',
-        url: '/:labelID',
+        url: '/:labelId',
         handler: this.getLabel,
         schema: {
           tags: [TAGS.LABELS],
@@ -42,7 +43,7 @@ class LabelController extends BaseController {
       },
       {
         method: 'PUT',
-        url: '/:labelID',
+        url: '/:labelId',
         handler: this.updateLabel,
         schema: {
           tags: [TAGS.LABELS],
@@ -58,7 +59,7 @@ class LabelController extends BaseController {
       },
       {
         method: 'DELETE',
-        url: '/:labelID',
+        url: '/:labelId',
         handler: this.deleteLabel,
         schema: {
           tags: [TAGS.LABELS],
@@ -100,25 +101,21 @@ class LabelController extends BaseController {
 
     await newLabel.save();
 
-    reply.send({
-      id: newLabel._id,
-      name: newLabel.name,
-      color: newLabel.color
-    });
+    reply.send(newLabel);
   }
 
   private async getLabel(request: FastifyRequest, reply: FastifyReply<ServerResponse>): Promise<any> {
-    const label = await LabelModel.findById(request.params.labelID);
+    const label = await LabelModel.findById(request.params.labelId);
 
-    reply.send({
-      id: label._id,
-      name: label.name,
-      color: label.color
-    });
+    if (!label) {
+      return reply.status(404).send(NotFound404.generate(`Label with the requested ID '${request.params.labelId}' was not found`));
+    }
+
+    reply.send(label);
   }
 
   private async updateLabel(request: FastifyRequest, reply: FastifyReply<ServerResponse>): Promise<any> {
-    const label = await LabelModel.findById(request.params.labelID);
+    const label = await LabelModel.findById(request.params.labelId);
 
     const { name, color } = request.body;
 
@@ -143,27 +140,19 @@ class LabelController extends BaseController {
 
     await label.save();
 
-    reply.send({
-      id: label._id,
-      name: label.name,
-      color: label.color
-    });
+    reply.send(label);
   }
 
   private async deleteLabel(request: FastifyRequest, reply: FastifyReply<ServerResponse>): Promise<any> {
-    const label = await LabelModel.findById(request.params.labelID);
+    const label = await LabelModel.findById(request.params.labelId);
 
     if (!label) {
-      return reply.status(404).send({
-        statusCode: 404,
-        error: 'Not Found',
-        message: 'Label with the requested ID was not found'
-      });
+      return reply.status(404).send(NotFound404.generate(`Label with the requested ID '${request.params.labelId}' was not found`));
     }
 
-    await LabelModel.findOneAndDelete({ _id: request.params.labelID });
+    await LabelModel.findOneAndDelete({ _id: request.params.labelId });
 
-    reply.status(200).send();
+    reply.status(200);
   }
 
   private searchLabels(request: FastifyRequest, reply: FastifyReply<ServerResponse>): void {
