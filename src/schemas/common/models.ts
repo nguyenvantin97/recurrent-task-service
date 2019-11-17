@@ -22,7 +22,7 @@ const SimpleUser = {
 };
 
 const ListOfUserEmails = {
-  description: 'A model representing a list of user emails',
+  description: 'A list of user emails',
   type: 'array',
   items: {
     type: 'string',
@@ -50,8 +50,18 @@ const SimpleDepartment = {
   }
 };
 
+const ListOfDepartmentNames = {
+  description: 'A list of department names',
+  type: 'array',
+  items: {
+    type: 'string',
+    example: 'Personnel Department'
+  }
+};
+
 export default {
   SimpleUser,
   ListOfUserEmails,
-  SimpleDepartment
+  SimpleDepartment,
+  ListOfDepartmentNames
 };

@@ -29,6 +29,7 @@ const SearchRecurrentTaskRequestBody = {
     },
     creators: CommonSchemaModels.ListOfUserEmails,
     doers: CommonSchemaModels.ListOfUserEmails,
+    departments: CommonSchemaModels.ListOfDepartmentNames,
     reviewers: CommonSchemaModels.ListOfUserEmails,
     status: {
       type: 'array',
