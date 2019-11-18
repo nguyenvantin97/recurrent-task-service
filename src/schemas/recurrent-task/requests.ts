@@ -1,22 +1,17 @@
+import _ from 'lodash';
 import RecurrentTaskSchemaModels from './models';
 import CommonSchemaModels from '@schemas/common/models';
 
-const CreateRecurrentTaskRequestBody = {
-  ...RecurrentTaskSchemaModels.RecurrentTask,
-  description: 'The request body when creating a new recurrent task',
-  required: [
-    'name',
-    'description'
-  ]
-};
 
+const CreateRecurrentTaskRequestBody = _.cloneDeep(RecurrentTaskSchemaModels.RecurrentTask);
+
+CreateRecurrentTaskRequestBody.description = 'The request body when creating a new recurrent task';
+CreateRecurrentTaskRequestBody.required = ['name', 'description'];
 delete CreateRecurrentTaskRequestBody.properties._id;
 
-const UpdateRecurrentTaskRequestBody = {
-  ...CreateRecurrentTaskRequestBody,
-  description: 'The request body when updating an existing recurrent task',
-};
+const UpdateRecurrentTaskRequestBody = _.cloneDeep(CreateRecurrentTaskRequestBody);
 
+UpdateRecurrentTaskRequestBody.description = 'The request body when updating an existing recurrent task';
 delete UpdateRecurrentTaskRequestBody.required;
 
 const SearchRecurrentTaskRequestBody = {

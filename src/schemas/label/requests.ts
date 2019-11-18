@@ -1,22 +1,15 @@
+import _ from 'lodash';
 import LabelSchemaModels from './models';
-import CommonSchemaModels from '@schemas/common/models';
 
-const CreateLabelRequestBody = {
-  ...LabelSchemaModels.Label,
-  description: 'The request body when creating a new label',
-  required: [
-    'name',
-    'color'
-  ]
-};
+const CreateLabelRequestBody = _.cloneDeep(LabelSchemaModels.Label);
 
+CreateLabelRequestBody.description = 'The request body when creating a new label';
+CreateLabelRequestBody.required = ['name', 'color'];
 delete CreateLabelRequestBody.properties._id;
 
-const UpdateLabelRequestBody = {
-  ...CreateLabelRequestBody,
-  description: 'The request body when updating an existing label',
-};
+const UpdateLabelRequestBody = _.cloneDeep(CreateLabelRequestBody);
 
+UpdateLabelRequestBody.description = 'The request body when updating an existing label';
 delete UpdateLabelRequestBody.required;
 
 const SearchLabelRequestBody = {

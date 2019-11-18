@@ -1,4 +1,5 @@
 import { prop, arrayProp, getModelForClass, Ref } from '@typegoose/typegoose';
+import * as mongoose from 'mongoose';
 import { Label } from './Label';
 import RecurrentTaskStatus from './enums/RecurrentTaskStatus';
 import SimpleUser from './pojo/SimpleUser';
@@ -6,6 +7,8 @@ import SimpleDepartment from './pojo/SimpleDepartment';
 import RecurrentTaskType from './enums/RecurrentTaskType';
 
 class RecurrentTask {
+  public _id: mongoose.Types.ObjectId;
+
   @prop({ required: true })
   public name!: string;
 
@@ -15,19 +18,19 @@ class RecurrentTask {
   @prop({ required: true })
   public creator!: SimpleUser;
 
-  @prop()
+  @prop({ _id: false })
   public doer?: SimpleUser;
 
-  @arrayProp({ items: SimpleUser })
+  @arrayProp({ items: SimpleUser, _id: false })
   public coDoers?: SimpleUser[];
 
-  @prop()
+  @prop({ _id: false })
   public reviewer?: SimpleUser;
 
-  @prop()
+  @prop({ _id: false })
   public department?: SimpleDepartment;
 
-  @arrayProp({ items: SimpleDepartment })
+  @arrayProp({ items: SimpleDepartment, _id: false })
   public coDepartments: SimpleDepartment[];
 
   @arrayProp({ itemsRef: Label })

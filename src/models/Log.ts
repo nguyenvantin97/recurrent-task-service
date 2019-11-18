@@ -16,7 +16,7 @@ class Log {
   @prop()
   public description?: string;
 
-  @prop({ required: true })
+  @prop({ required: true, _id: false })
   public executer!: SimpleUser;
 
   @prop({ default: new Date() })
