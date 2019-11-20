@@ -162,26 +162,18 @@ class RecurrentTaskController extends BaseController {
   }
 
   private async searchRecurrentTasks(request: FastifyRequest, reply: FastifyReply<ServerResponse>): Promise<any> {
-    const { search, fields, offset, limit, sort } = request.query;
+    const { fields, offset, limit, sort } = request.query;
 
-    const searchRequest = {
-      search,
-      fields,
-      offset,
-      limit,
-      sort,
-      body: request.body
-    };
+    const searchRequest = { fields, offset, limit, sort, body: request.body };
 
-    if (search) searchRequest.search = search;
     if (fields) searchRequest.fields = fields.split(',');
-    if (offset) searchRequest.offset = parseInt(offset, 10);
-    if (limit) searchRequest.limit = parseInt(limit, 10);
+    if (offset) searchRequest.offset = Number(offset);
+    if (limit) searchRequest.limit = Number(limit);
     if (sort) searchRequest.sort = sort.split(',');
 
     const recurrentTasks = await searchRecurrentTasks(searchRequest);
 
-    reply.status(200).send(recurrentTasks);
+    reply.send(recurrentTasks);
   }
 
   private getRecurrentTasksByUserId(request: FastifyRequest, reply: FastifyReply<ServerResponse>): void {

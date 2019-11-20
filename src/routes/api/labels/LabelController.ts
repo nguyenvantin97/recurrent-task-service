@@ -8,6 +8,7 @@ import CommonSchemaRequests from '@schemas/common/requests';
 import CommonSchemaResponses from '@schemas/common/responses';
 import { TAGS } from '@schemas/common/tags';
 import NotFound404 from '@models/responses/NotFound404';
+import { SEARCH_DEFAULT } from '@constants/common';
 
 class LabelController extends BaseController {
   public getRoutes(): RouteOptions[] {
@@ -155,8 +156,15 @@ class LabelController extends BaseController {
     reply.status(200);
   }
 
-  private searchLabels(request: FastifyRequest, reply: FastifyReply<ServerResponse>): void {
-    reply.send({ message: 'It has not been implemented yet.' });
+  private async searchLabels(request: FastifyRequest, reply: FastifyReply<ServerResponse>): Promise<any> {
+    const { offset, limit } = request.query;
+
+    const labels = await LabelModel.find(request.body)
+      .skip(Number(offset) || SEARCH_DEFAULT.OFFSET)
+      .limit(Number(limit) || SEARCH_DEFAULT.LIMIT)
+      .lean();
+
+    reply.send(labels);
   }
 }
 

@@ -1,4 +1,5 @@
 import { RecurrentTaskModel } from '@models/RecurrentTask';
+import { SEARCH_DEFAULT } from '@constants/common';
 
 // TODO: Turn this into a class with a static method
 async function searchRecurrentTasks({ offset, limit, fields, sort, body }): Promise<any> {
@@ -51,8 +52,8 @@ async function searchRecurrentTasks({ offset, limit, fields, sort, body }): Prom
         const value = element.substring(element.lastIndexOf('_') + 1) === 'asc' ? 1 : -1;
         return `"${field}":${value}`;
       }).join(',')}}`) : { _id: 1 })
-    .skip(offset || 0)
-    .limit(limit || 40)
+    .skip(offset || SEARCH_DEFAULT.OFFSET)
+    .limit(limit || SEARCH_DEFAULT.LIMIT)
     .select(fields ? JSON.parse(`{${fields.map(element => `"${element}":1`).join(',')}}`) : {})
     .lean();
 
