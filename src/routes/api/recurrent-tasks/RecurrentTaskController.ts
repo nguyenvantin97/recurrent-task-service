@@ -8,6 +8,7 @@ import CommonSchemaResponses from '@schemas/common/responses';
 import { TAGS } from '@schemas/common/tags';
 import RecurrentTaskModel from '@models/RecurrentTask';
 import NotFound404 from '@models/responses/NotFound404';
+import { searchRecurrentTasks } from '@services/recurrent-tasks/RecurrentTaskService';
 
 class RecurrentTaskController extends BaseController {
   public getRoutes(): RouteOptions[] {
@@ -73,7 +74,7 @@ class RecurrentTaskController extends BaseController {
         }
       },
       {
-        method: 'GET',
+        method: 'POST',
         url: '/search',
         handler: this.searchRecurrentTasks,
         schema: {
@@ -160,8 +161,27 @@ class RecurrentTaskController extends BaseController {
     reply.status(200);
   }
 
-  private searchRecurrentTasks(request: FastifyRequest, reply: FastifyReply<ServerResponse>): void {
-    reply.send({ message: 'It has not been implemented yet.' });
+  private async searchRecurrentTasks(request: FastifyRequest, reply: FastifyReply<ServerResponse>): Promise<any> {
+    const { search, fields, offset, limit, sort } = request.query;
+
+    const searchRequest = {
+      search,
+      fields,
+      offset,
+      limit,
+      sort,
+      body: request.body
+    };
+
+    if (search) searchRequest.search = search;
+    if (fields) searchRequest.fields = fields.split(',');
+    if (offset) searchRequest.offset = parseInt(offset, 10);
+    if (limit) searchRequest.limit = parseInt(limit, 10);
+    if (sort) searchRequest.sort = sort.split(',');
+
+    const recurrentTasks = await searchRecurrentTasks(searchRequest);
+
+    reply.status(200).send(recurrentTasks);
   }
 
   private getRecurrentTasksByUserId(request: FastifyRequest, reply: FastifyReply<ServerResponse>): void {
