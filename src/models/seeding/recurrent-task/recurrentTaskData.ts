@@ -8,19 +8,21 @@ const RANDOM_LENGTH = 40;
 
 const randomNumber = max => Math.round(Math.random() * max);
 
-const randomDate = (start, end) =>
-  new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
+const randomDate = (start, end) => new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
 
 const randomArrayNumberRecursively = (number, arrayData) => {
   if (!number) return arrayData;
+
   const eliminateIndex = randomNumber(arrayData.length - 1);
   const newArrayData = arrayData.filter(data => data.name !== arrayData[eliminateIndex].name);
+
   return randomArrayNumberRecursively(number - 1, newArrayData);
 };
 
-const randomEnumProperty = obj => {
-  var keys = Object.keys(obj);
-  return obj[keys[(keys.length * Math.random()) << 0]];
+const randomEnumProperty = enumObject => {
+  const enumKeys = Object.keys(enumObject);
+
+  return enumObject[enumKeys[(enumKeys.length * Math.random()) << 0]];
 };
 
 const recurrentTaskData = Array.from({ length: RANDOM_LENGTH }, () => {
@@ -84,7 +86,8 @@ const recurrentTaskData = Array.from({ length: RANDOM_LENGTH }, () => {
 
   const due = randomDate(new Date(2019, 15, 11), new Date());
 
-  const comment = 'What is that ?';
+  // https://www.npmjs.com/package/casual
+  const comment = 'What is that?';
 
   const status = randomEnumProperty(RecurrentTaskStatus);
 

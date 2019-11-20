@@ -2,12 +2,13 @@ import LabelModel from '../../Label';
 import labelData from './labelData';
 
 const labelSeeding = async () => {
-  LabelModel.deleteMany({}).then(() => {
-    labelData.map(async label => {
-      await label.save();
-    });
-    console.log('Seeding label completed!');
-  });
+  console.log('Seeding labels...');
+
+  await LabelModel.deleteMany({});
+
+  await Promise.all(labelData.map(label => label.save()));
+
+  console.log('Label seeding completed.');
 };
 
 export default labelSeeding;

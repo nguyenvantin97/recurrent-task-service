@@ -18,6 +18,8 @@ const connectToMongoDB = async () => {
 };
 
 connectToMongoDB().then(async () => {
-  labelSeeding();
-  recurrentTaskSeeding();
-});
+  await labelSeeding();
+  await recurrentTaskSeeding();
+
+  console.log('Seeding completed!');
+}).finally(() => process.exit());
