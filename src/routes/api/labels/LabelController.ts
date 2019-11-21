@@ -74,7 +74,7 @@ class LabelController extends BaseController {
         }
       },
       {
-        method: 'GET',
+        method: 'POST',
         url: '/search',
         handler: this.searchLabels,
         schema: {
