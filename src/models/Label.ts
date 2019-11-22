@@ -1,6 +1,6 @@
 import { prop, post, getModelForClass } from '@typegoose/typegoose';
-import { LABEL_EVENT } from '@constants/events';
-import localPubsub from '@pubsub/LocalPubsub';
+import { LABEL_EVENT } from '../constants/events';
+import localPubsub from '../pubsub/LocalPubsub';
 
 @post<Label>('save', recurrentTask => {
   localPubsub.emit(LABEL_EVENT.CREATED, recurrentTask);
