@@ -5,8 +5,8 @@ import RecurrentTaskStatus from './enums/RecurrentTaskStatus';
 import SimpleUser from './pojo/SimpleUser';
 import SimpleDepartment from './pojo/SimpleDepartment';
 import RecurrentTaskType from './enums/RecurrentTaskType';
-import localPubsub from '@pubsub/LocalPubsub';
-import { RECURRENT_TASK_EVENT } from '@constants/events';
+import localPubsub from '../pubsub/LocalPubsub';
+import { RECURRENT_TASK_EVENT } from '../constants/events';
 
 @post<RecurrentTask>('save', recurrentTask => {
   localPubsub.emit(RECURRENT_TASK_EVENT.CREATED, recurrentTask);
