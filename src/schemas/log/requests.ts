@@ -38,6 +38,7 @@ const GetLabelLogRequest = {
 };
 
 export default {
+  GetLogRequest,
   GetTaskLogRequest,
   GetLabelLogRequest
 };

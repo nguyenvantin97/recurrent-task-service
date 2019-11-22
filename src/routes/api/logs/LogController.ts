@@ -4,44 +4,43 @@ import BaseController from '@routes/BaseController';
 import LogSchemaModels from '@schemas/log/models';
 import LogSchemaRequests from '@schemas/log/requests';
 import { TAGS } from '@schemas/common/tags';
-import BadRequest400 from '@models/responses/BadRequest400';
+import LogModel from '@models/Log';
+import { SEARCH_DEFAULT } from '@constants/common';
 
 class HelloController extends BaseController {
   public getRoutes(): RouteOptions[] {
     return [
       {
         method: 'GET',
-        url: '/recurrent-tasks',
+        url: '/',
         handler: this.getTaskLogs,
         schema: {
           tags: [TAGS.LOGS],
-          querystring: LogSchemaRequests.GetTaskLogRequest,
+          querystring: LogSchemaRequests.GetLogRequest,
           response: {
-            200: LogSchemaModels.Log
-          }
-        }
-      },
-      {
-        method: 'GET',
-        url: '/labels',
-        handler: this.getLabelLogs,
-        schema: {
-          tags: [TAGS.LOGS],
-          querystring: LogSchemaRequests.GetLabelLogRequest,
-          response: {
-            200: LogSchemaModels.Log
+            200: {
+              type: 'array',
+              items: LogSchemaModels.Log
+            }
           }
         }
       }
     ];
   }
 
-  private getTaskLogs(request: FastifyRequest, reply: FastifyReply<ServerResponse>): void {
-    reply.status(400).send(BadRequest400.generate('Missing fields'));
-  }
+  private async getTaskLogs(request: FastifyRequest, reply: FastifyReply<ServerResponse>): Promise<any> {
+    const { offset, limit, resourceType } = request.query;
 
-  private getLabelLogs(request: FastifyRequest, reply: FastifyReply<ServerResponse>): void {
-    reply.status(400).send(BadRequest400.generate('Missing fields'));
+    const mongoQuery: any = {};
+
+    if (resourceType) mongoQuery.resourceType = resourceType;
+
+    const logs = await LogModel.find(mongoQuery)
+      .skip(Number(offset) || SEARCH_DEFAULT.OFFSET)
+      .limit(Number(limit) || SEARCH_DEFAULT.LIMIT)
+      .lean();
+
+    reply.send(logs);
   }
 }
 

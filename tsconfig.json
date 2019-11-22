@@ -17,7 +17,8 @@
       "@models/*": ["src/models/*"],
       "@schemas/*": ["src/schemas/*"],
       "@services/*": ["src/services/*"],
-      "@constants/*": ["src/constants/*"]
+      "@constants/*": ["src/constants/*"],
+      "@pubsub/*": ["src/pubsub/*"]
     },
     "lib": ["es2017", "dom"]
   },

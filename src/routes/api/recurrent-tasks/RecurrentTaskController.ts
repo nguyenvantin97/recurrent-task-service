@@ -9,6 +9,7 @@ import { TAGS } from '@schemas/common/tags';
 import RecurrentTaskModel from '@models/RecurrentTask';
 import NotFound404 from '@models/responses/NotFound404';
 import { searchRecurrentTasks } from '@services/recurrent-tasks/RecurrentTaskService';
+import { DEFAULT_USER } from '@constants/common';
 
 class RecurrentTaskController extends BaseController {
   public getRoutes(): RouteOptions[] {
@@ -134,17 +135,11 @@ class RecurrentTaskController extends BaseController {
   }
 
   private async updateRecurrentTask(request: FastifyRequest, reply: FastifyReply<ServerResponse>): Promise<any> {
-    const recurrentTask = await RecurrentTaskModel.findById(request.params.recurrentTaskId);
+    const recurrentTask = await RecurrentTaskModel.findOneAndUpdate({ _id: request.params.recurrentTaskId }, request.body, { new: true });
 
     if (!recurrentTask) {
       return reply.status(404).send(NotFound404.generate(`Recurrent task with the requested ID '${request.params.recurrentTaskId}' was not found`));
     }
-
-    Object.keys(request.body).forEach(fieldToUpdate => {
-      recurrentTask[fieldToUpdate] = request.body[fieldToUpdate];
-    });
-
-    await recurrentTask.save();
 
     reply.send(recurrentTask);
   }
@@ -156,9 +151,9 @@ class RecurrentTaskController extends BaseController {
       return reply.status(404).send(NotFound404.generate(`Recurrent task with the requested ID '${request.params.recurrentTaskId}' was not found`));
     }
 
-    await RecurrentTaskModel.findOneAndDelete({ _id: request.params.recurrentTaskId });
+    await recurrentTask.remove();
 
-    reply.status(200);
+    reply.send(recurrentTask);
   }
 
   private async searchRecurrentTasks(request: FastifyRequest, reply: FastifyReply<ServerResponse>): Promise<any> {

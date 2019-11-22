@@ -49,6 +49,10 @@ const Log = {
       type: 'string',
       example: 'The tasks were deleted due to wrong nomination.'
     },
+    details: {
+      type: 'object',
+      description: 'This may contain details about the resource(s).'
+    },
     executer: CommonSchemaModels.SimpleUser,
     timestamp: {
       type: 'string',

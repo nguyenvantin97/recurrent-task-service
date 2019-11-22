@@ -6,10 +6,15 @@ import APIRoutes from '@routes/Routes';
 import CommonSchemaTags from '@schemas/common/tags';
 import RecurrentTaskSchemaModels from '@schemas/recurrent-task/models';
 import LabelSchemaModels from '@schemas/label/models';
+import RecurrentTaskLog from '@services/logs/RecurrentTaskLog';
+import LabelLog from '@services/logs/LabelLog';
+import localPubsub from '@pubsub/LocalPubsub';
 
 class App {
   public fastifyApp: fastify.FastifyInstance;
   public apiRoutes: APIRoutes;
+  public recurrentTaskLog: RecurrentTaskLog;
+  public labelLog: LabelLog;
 
   constructor() {
     this.fastifyApp = fastify({
@@ -22,6 +27,7 @@ class App {
     this.setUpSwagger();
     this.setUpAPIRoutes();
     this.configPostRouteMiddlewares();
+    this.setUpLogging();
   }
 
   private configPreRouteMiddlewares(): void {
@@ -71,6 +77,14 @@ class App {
 
   private setUpAPIRoutes(): void {
     this.apiRoutes.initialize();
+  }
+
+  private setUpLogging(): void {
+    this.recurrentTaskLog = new RecurrentTaskLog(localPubsub, this.fastifyApp.log);
+    this.recurrentTaskLog.listen();
+
+    this.labelLog = new LabelLog(localPubsub, this.fastifyApp.log);
+    this.labelLog.listen();
   }
 }
 

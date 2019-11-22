@@ -14,6 +14,9 @@ class Log {
   public operation!: ResourceOperation;
 
   @prop()
+  public details?: object;
+
+  @prop()
   public description?: string;
 
   @prop({ required: true, _id: false })

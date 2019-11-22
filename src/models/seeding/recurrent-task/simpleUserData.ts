@@ -2,27 +2,27 @@ const simpleUsersData = [
   {
     id: 1,
     name: 'Mai Gia Bao Anh',
-    email: 'baoanh@gmail.com'
+    email: 'baoanh@default.com'
   },
   {
     id: 2,
     name: 'Ta Quoc Huy',
-    email: 'quochuy@gmail.com'
+    email: 'quochuy@default.com'
   },
   {
     id: 3,
     name: 'Phi Khanh Huyen',
-    email: 'khanhhuyen@gmail.com'
+    email: 'khanhhuyen@default.com'
   },
   {
     id: 4,
     name: 'Nguyen Thi Hoai',
-    email: 'hoainguyen@gmail.com'
+    email: 'hoainguyen@default.com'
   },
   {
     id: 5,
     name: 'Nguyen Van Tin',
-    email: 'tinvan@gmail.com'
+    email: 'tinvan@default.com'
   }
 ];
 

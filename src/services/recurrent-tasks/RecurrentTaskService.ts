@@ -45,8 +45,12 @@ async function searchRecurrentTasks({ offset, limit, fields, sort, body }): Prom
 
   if (Array.isArray(status)) $and.push({ status: { $in: status } });
 
+  const mongoQuery: any = {};
+
+  if ($and.length) mongoQuery.$and = $and;
+
   const recurrentTasks = await RecurrentTaskModel
-    .find({ $and })
+    .find(mongoQuery)
     .sort(sort ? JSON.parse(`{${sort.map(element => {
         const field = element.substring(0, element.lastIndexOf('_'));
         const value = element.substring(element.lastIndexOf('_') + 1) === 'asc' ? 1 : -1;

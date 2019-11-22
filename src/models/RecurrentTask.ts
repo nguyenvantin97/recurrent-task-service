@@ -1,14 +1,23 @@
-import { prop, arrayProp, getModelForClass, Ref } from '@typegoose/typegoose';
+import { prop, arrayProp, getModelForClass, Ref, post } from '@typegoose/typegoose';
 import * as mongoose from 'mongoose';
 import { Label } from './Label';
 import RecurrentTaskStatus from './enums/RecurrentTaskStatus';
 import SimpleUser from './pojo/SimpleUser';
 import SimpleDepartment from './pojo/SimpleDepartment';
 import RecurrentTaskType from './enums/RecurrentTaskType';
+import localPubsub from '@pubsub/LocalPubsub';
+import { RECURRENT_TASK_EVENT } from '@constants/events';
 
+@post<RecurrentTask>('save', recurrentTask => {
+  localPubsub.emit(RECURRENT_TASK_EVENT.CREATED, recurrentTask);
+})
+@post<RecurrentTask>('findOneAndUpdate', updatedRecurrentTask => {
+  localPubsub.emit(RECURRENT_TASK_EVENT.UPDATED, updatedRecurrentTask);
+})
+@post<RecurrentTask>('remove', deletedRecurrentTask => {
+  localPubsub.emit(RECURRENT_TASK_EVENT.DELETED, deletedRecurrentTask);
+})
 class RecurrentTask {
-  public _id: mongoose.Types.ObjectId;
-
   @prop({ required: true })
   public name!: string;
 
