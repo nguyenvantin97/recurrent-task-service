@@ -31,7 +31,7 @@ class App {
   }
 
   private configPreRouteMiddlewares(): void {
-
+    this.fastifyApp.register(require('fastify-cors'));
   }
 
   private configPostRouteMiddlewares(): void {
