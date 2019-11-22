@@ -1,25 +1,22 @@
-import { prop, arrayProp, getModelForClass, Ref } from '@typegoose/typegoose';
+import { prop, arrayProp, getModelForClass, Ref, post } from '@typegoose/typegoose';
+import * as mongoose from 'mongoose';
 import { Label } from './Label';
+import RecurrentTaskStatus from './enums/RecurrentTaskStatus';
+import SimpleUser from './pojo/SimpleUser';
+import SimpleDepartment from './pojo/SimpleDepartment';
+import RecurrentTaskType from './enums/RecurrentTaskType';
+import localPubsub from '@pubsub/LocalPubsub';
+import { RECURRENT_TASK_EVENT } from '@constants/events';
 
-class SimpleUser {
-  @prop({ required: true })
-  public uid!: string;
-
-  @prop({ required: true })
-  public name!: string;
-
-  @prop()
-  public email?: string;
-}
-
-enum RecurrentTaskStatus {
-  PENDING = 'pending',
-  DOING = 'doing',
-  FINISHED = 'finished',
-  OVERDUE = 'overdue',
-  CANCELLED = 'cancelled'
-}
-
+@post<RecurrentTask>('save', recurrentTask => {
+  localPubsub.emit(RECURRENT_TASK_EVENT.CREATED, recurrentTask);
+})
+@post<RecurrentTask>('findOneAndUpdate', updatedRecurrentTask => {
+  localPubsub.emit(RECURRENT_TASK_EVENT.UPDATED, updatedRecurrentTask);
+})
+@post<RecurrentTask>('remove', deletedRecurrentTask => {
+  localPubsub.emit(RECURRENT_TASK_EVENT.DELETED, deletedRecurrentTask);
+})
 class RecurrentTask {
   @prop({ required: true })
   public name!: string;
@@ -30,14 +27,23 @@ class RecurrentTask {
   @prop({ required: true })
   public creator!: SimpleUser;
 
-  @arrayProp({ items: SimpleUser })
-  public doers?: SimpleUser[];
+  @prop({ _id: false })
+  public doer?: SimpleUser;
 
-  @prop()
+  @arrayProp({ items: SimpleUser, _id: false })
+  public coDoers?: SimpleUser[];
+
+  @prop({ _id: false })
   public reviewer?: SimpleUser;
 
+  @prop({ _id: false })
+  public department?: SimpleDepartment;
+
+  @arrayProp({ items: SimpleDepartment, _id: false })
+  public coDepartments: SimpleDepartment[];
+
   @arrayProp({ itemsRef: Label })
-  public labelIDs: Ref<Label>[];
+  public labelIds: Ref<Label>[];
 
   @prop()
   public start?: Date;
@@ -48,7 +54,16 @@ class RecurrentTask {
   @prop()
   public due?: Date;
 
-  @prop({ enum: RecurrentTaskStatus, default: RecurrentTaskStatus.PENDING }) 
+  @prop()
+  public comment?: string;
+
+  @prop({ enum: RecurrentTaskType })
+  public type!: RecurrentTaskType;
+
+  @prop({ min: 0, max: 100 })
+  public percentComplete?: number;
+
+  @prop({ enum: RecurrentTaskStatus, default: RecurrentTaskStatus.PENDING })
   public status?: RecurrentTaskStatus;
 }
 

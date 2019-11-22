@@ -1,27 +1,22 @@
 import { RouteOptions, FastifyRequest, FastifyReply } from 'fastify';
 import { ServerResponse } from 'http';
 import BaseController from '@routes/BaseController';
+import HelloSchemaModels from '@schemas/hello/models';
+import { TAGS } from '@schemas/common/tags';
 
 class HelloController extends BaseController {
   public getRoutes(): RouteOptions[] {
     return [
-      /**
-       * @swagger
-       * /api/hello:
-       *   get:
-       *     tags:
-       *     - "hello"
-       *     description: "Returns a \"Hello World\" message"
-       *     produces:
-       *     - "application/json"
-       *     responses:
-       *       200:
-       *         description: "\"Hello World\" message successfully sent"
-       */
       {
         method: 'GET',
         url: '/',
-        handler: this.sayHello
+        handler: this.sayHello,
+        schema: {
+          tags: [TAGS.HELLO],
+          response: {
+            200: HelloSchemaModels.Hello
+          }
+        }
       }
     ];
   }

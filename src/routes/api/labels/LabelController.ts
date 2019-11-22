@@ -2,179 +2,95 @@ import { RouteOptions, FastifyRequest, FastifyReply } from 'fastify';
 import { ServerResponse } from 'http';
 import BaseController from '@routes/BaseController';
 import LabelModel from '@models/Label';
+import LabelSchemaModels from '@schemas/label/models';
+import LabelSchemaRequests from '@schemas/label/requests';
+import CommonSchemaRequests from '@schemas/common/requests';
+import CommonSchemaResponses from '@schemas/common/responses';
+import { TAGS } from '@schemas/common/tags';
+import NotFound404 from '@models/responses/NotFound404';
+import { SEARCH_DEFAULT } from '@constants/common';
 
 class LabelController extends BaseController {
   public getRoutes(): RouteOptions[] {
     return [
-      /**
-       * @swagger
-       * /api/labels:
-       *   post:
-       *     tags:
-       *     - "labels"
-       *     description: "Creates a new label"
-       *     consumes:
-       *     - "application/json"
-       *     produces:
-       *     - "application/json"
-       *     parameters:
-       *     - in: "body"
-       *       name: "body"
-       *       description: "The information about the new label"
-       *       required: true
-       *       schema:
-       *         $ref: "#/definitions/CreateLabelRequestBody"
-       *     responses:
-       *       200:
-       *         description: "Successfully created a new label"
-       *         schema:
-       *           $ref: "#/definitions/Label"
-       *       400:
-       *         description: "Field(s) missing or invalid"
-       *         schema:
-       *           $ref: "#/definitions/BadRequest400Response"
-       */
       {
         method: 'POST',
         url: '/',
-        handler: this.createLabel
+        handler: this.createLabel,
+        schema: {
+          tags: [TAGS.LABELS],
+          description: 'Creates a new label',
+          body: LabelSchemaRequests.CreateLabelRequestBody,
+          response: {
+            200: LabelSchemaModels.Label,
+            400: CommonSchemaResponses.BadRequest400Response
+          }
+        }
       },
-      /**
-       * @swagger
-       * /api/labels/:labelID:
-       *   get:
-       *     tags:
-       *     - "labels"
-       *     description: "Gets detailed information about a specific label"
-       *     produces:
-       *     - "application/json"
-       *     responses:
-       *       200:
-       *         schema:
-       *           $ref: "#/definitions/Label"
-       *       403:
-       *         description: "Cannot get label information due to insufficient permission"
-       *         schema:
-       *           $ref: "#/definitions/ForbiddenAccess403Response"
-       *       404:
-       *         description: "Label was not found"
-       *         schema:
-       *           $ref: "#/definitions/ResourceNotFound404Response"
-       */
       {
         method: 'GET',
-        url: '/:labelID',
-        handler: this.getLabel
+        url: '/:labelId',
+        handler: this.getLabel,
+        schema: {
+          tags: [TAGS.LABELS],
+          description: 'Gets detailed information about a specific label',
+          response: {
+            200: LabelSchemaModels.Label,
+            401: CommonSchemaResponses.Unauthorized401Response,
+            403: CommonSchemaResponses.ForbiddenAccess403Response,
+            404: CommonSchemaResponses.ResourceNotFound404Response
+          }
+        }
       },
-      /**
-       * @swagger
-       * /api/labels/:labelID:
-       *   put:
-       *     tags:
-       *     - "labels"
-       *     description: "Updates an existing label"
-       *     consumes:
-       *     - "application/json"
-       *     produces:
-       *     - "application/json"
-       *     parameters:
-       *     - in: "body"
-       *       name: "body"
-       *       description: "The fields need to be updated"
-       *       required: true
-       *       schema:
-       *         $ref: "#/definitions/UpdateLabelRequestBody"
-       *     responses:
-       *       200:
-       *         description: "Successfully updated label"
-       *         schema:
-       *           $ref: "#/definitions/Label"
-       *       304:
-       *         description: "The label was not modified"
-       *         schema:
-       *           $ref: "#/definitions/NotModified304Response"
-       *       400:
-       *         description: "Field(s) invalid"
-       *         schema:
-       *           $ref: "#/definitions/BadRequest400Response"
-       *       404:
-       *         description: "Label was not found"
-       *         schema:
-       *           $ref: "#/definitions/ResourceNotFound404Response"
-       */
       {
         method: 'PUT',
-        url: '/:labelID',
-        handler: this.updateLabel
+        url: '/:labelId',
+        handler: this.updateLabel,
+        schema: {
+          tags: [TAGS.LABELS],
+          description: 'Updates an existing label',
+          body: LabelSchemaRequests.UpdateLabelRequestBody,
+          response: {
+            200: LabelSchemaModels.Label,
+            304: CommonSchemaResponses.NotModified304Response,
+            400: CommonSchemaResponses.BadRequest400Response,
+            404: CommonSchemaResponses.ResourceNotFound404Response
+          }
+        }
       },
-      /**
-       * @swagger
-       * /api/labels/:labelID:
-       *   delete:
-       *     tags:
-       *     - "labels"
-       *     description: "Deletes an existing label"
-       *     consumes:
-       *     - "application/json"
-       *     produces:
-       *     - "application/json"
-       *     responses:
-       *       200:
-       *         description: "Successfully deleted label"
-       *       404:
-       *         description: "Label was not found"
-       *         schema:
-       *           $ref: "#/definitions/ResourceNotFound404Response"
-       */
       {
         method: 'DELETE',
-        url: '/:labelID',
-        handler: this.deleteLabel
+        url: '/:labelId',
+        handler: this.deleteLabel,
+        schema: {
+          tags: [TAGS.LABELS],
+          description: 'Deletes an existing label',
+          response: {
+            200: LabelSchemaModels.Label,
+            401: CommonSchemaResponses.Unauthorized401Response,
+            403: CommonSchemaResponses.ForbiddenAccess403Response,
+            404: CommonSchemaResponses.ResourceNotFound404Response
+          }
+        }
       },
-      /**
-       * @swagger
-       * /api/labels/search:
-       *   get:
-       *     tags:
-       *     - "labels"
-       *     description: "Search for labels"
-       *     consumes:
-       *     - "application/json"
-       *     produces:
-       *     - "application/json"
-       *     parameters:
-       *     - in: "body"
-       *       name: "body"
-       *       description: "The fields to base the search upon"
-       *       required: true
-       *       schema:
-       *         $ref: "#/definitions/SearchLabelRequestBody"
-       *     - in: "query"
-       *       name: "offset"
-       *       type: "integer"
-       *       default: 0
-       *       minimum: 0
-       *     - in: "query"
-       *       name: "limit"
-       *       type: "integer"
-       *       default: 40
-       *       minimum: 0
-       *     responses:
-       *       200:
-       *         description: "Successfully updated label"
-       *         schema:
-       *           type: "array"
-       *           items:
-       *             $ref: "#/definitions/Label"
-       *       400:
-       *         description: "Field(s) invalid"
-       *         schema:
-       *           $ref: "#/definitions/BadRequest400Response"
-       */
       {
-        method: 'GET',
+        method: 'POST',
         url: '/search',
-        handler: this.searchLabels
+        handler: this.searchLabels,
+        schema: {
+          tags: [TAGS.LABELS],
+          description: 'Searches for labels',
+          querystring: CommonSchemaRequests.PaginationQueryParams,
+          body: LabelSchemaRequests.SearchLabelRequestBody,
+          response: {
+            200: {
+              type: 'array',
+              items: LabelSchemaModels.Label
+            },
+            400: CommonSchemaResponses.BadRequest400Response,
+            401: CommonSchemaResponses.Unauthorized401Response
+          }
+        }
       }
     ];
   }
@@ -182,53 +98,25 @@ class LabelController extends BaseController {
   private async createLabel(request: FastifyRequest, reply: FastifyReply<ServerResponse>): Promise<any> {
     const { name, color } = request.body;
 
-    if (!name || !color) {
-      return reply.status(400).send({
-        code: 400,
-        error: 'Bad Request',
-        message: 'Either the \'name\' field or the \'color\' field is missing'
-      });
-    }
-
     const newLabel = new LabelModel({ name, color });
 
     await newLabel.save();
 
-    reply.send({
-      id: newLabel._id,
-      name: newLabel.name,
-      color: newLabel.color
-    });
+    reply.send(newLabel);
   }
 
   private async getLabel(request: FastifyRequest, reply: FastifyReply<ServerResponse>): Promise<any> {
-    const label = await LabelModel.findById(request.params.labelID);
+    const label = await LabelModel.findById(request.params.labelId);
 
     if (!label) {
-      return reply.status(404).send({
-        statusCode: 404,
-        error: 'Not Found',
-        message: 'Label with the requested ID was not found'
-      });
+      return reply.status(404).send(NotFound404.generate(`Label with the requested ID '${request.params.labelId}' was not found`));
     }
 
-    reply.send({
-      id: label._id,
-      name: label.name,
-      color: label.color
-    });
+    reply.send(label);
   }
 
   private async updateLabel(request: FastifyRequest, reply: FastifyReply<ServerResponse>): Promise<any> {
-    const label = await LabelModel.findById(request.params.labelID);
-
-    if (!label) {
-      return reply.status(404).send({
-        statusCode: 404,
-        error: 'Not Found',
-        message: 'Label with the requested ID was not found'
-      });
-    }
+    const label = await LabelModel.findById(request.params.labelId);
 
     const { name, color } = request.body;
 
@@ -253,31 +141,30 @@ class LabelController extends BaseController {
 
     await label.save();
 
-    reply.send({
-      id: label._id,
-      name: label.name,
-      color: label.color
-    });
+    reply.send(label);
   }
 
   private async deleteLabel(request: FastifyRequest, reply: FastifyReply<ServerResponse>): Promise<any> {
-    const label = await LabelModel.findById(request.params.labelID);
+    const label = await LabelModel.findById(request.params.labelId);
 
     if (!label) {
-      return reply.status(404).send({
-        statusCode: 404,
-        error: 'Not Found',
-        message: 'Label with the requested ID was not found'
-      });
+      return reply.status(404).send(NotFound404.generate(`Label with the requested ID '${request.params.labelId}' was not found`));
     }
 
-    await LabelModel.findOneAndDelete({ _id: request.params.labelID });
+    await LabelModel.findOneAndDelete({ _id: request.params.labelId });
 
-    reply.status(200).send();
+    reply.status(200);
   }
 
-  private searchLabels(request: FastifyRequest, reply: FastifyReply<ServerResponse>): void {
-    reply.send({ message: 'It has not been implemented yet.' });
+  private async searchLabels(request: FastifyRequest, reply: FastifyReply<ServerResponse>): Promise<any> {
+    const { offset, limit } = request.query;
+
+    const labels = await LabelModel.find(request.body)
+      .skip(Number(offset) || SEARCH_DEFAULT.OFFSET)
+      .limit(Number(limit) || SEARCH_DEFAULT.LIMIT)
+      .lean();
+
+    reply.send(labels);
   }
 }
 

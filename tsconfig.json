@@ -11,10 +11,14 @@
     "baseUrl": ".",
     "noImplicitAny": false,
     "paths": {
-      "*": ["node_modules/*", "src/types/*"],
+      "*": ["node_modules/*"],
       "@utils/*": ["src/utils/*"],
       "@routes/*": ["src/routes/*"],
-      "@models/*": ["src/models/*"]
+      "@models/*": ["src/models/*"],
+      "@schemas/*": ["src/schemas/*"],
+      "@services/*": ["src/services/*"],
+      "@constants/*": ["src/constants/*"],
+      "@pubsub/*": ["src/pubsub/*"]
     },
     "lib": ["es2017", "dom"]
   },

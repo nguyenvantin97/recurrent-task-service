@@ -1,16 +1,20 @@
-import fastify, { FastifyReply } from 'fastify';
-import { ServerResponse } from 'http';
-import path from 'path';
-import swaggerJSDoc from 'swagger-jsdoc';
-import fastifyStatic from 'fastify-static';
+import fastify from 'fastify';
+import fastifySwagger from 'fastify-swagger';
 import mongoose from 'mongoose';
 
 import APIRoutes from '@routes/Routes';
+import CommonSchemaTags from '@schemas/common/tags';
+import RecurrentTaskSchemaModels from '@schemas/recurrent-task/models';
+import LabelSchemaModels from '@schemas/label/models';
+import RecurrentTaskLog from '@services/logs/RecurrentTaskLog';
+import LabelLog from '@services/logs/LabelLog';
+import localPubsub from '@pubsub/LocalPubsub';
 
 class App {
   public fastifyApp: fastify.FastifyInstance;
   public apiRoutes: APIRoutes;
-  public swaggerSpec: swaggerJSDoc;
+  public recurrentTaskLog: RecurrentTaskLog;
+  public labelLog: LabelLog;
 
   constructor() {
     this.fastifyApp = fastify({
@@ -23,6 +27,7 @@ class App {
     this.setUpSwagger();
     this.setUpAPIRoutes();
     this.configPostRouteMiddlewares();
+    this.setUpLogging();
   }
 
   private configPreRouteMiddlewares(): void {
@@ -46,33 +51,40 @@ class App {
   }
 
   private setUpSwagger() {
-    const swaggerDefinition = {
-      info: {
-        title: 'Recurrent Task Microservice - API Documentation',
-        version: '0.0.1',
-        description: 'This is the API documentation for the microservice managing recurrent tasks.'
-      }
-    };
+    this.fastifyApp.log.info('Generating Swagger Docs...');
 
-    const swaggerDocOptions = {
-      swaggerDefinition,
-      apis: ['**/*.yml', '**/*.ts']
-    };
-
-    this.swaggerSpec = swaggerJSDoc(swaggerDocOptions);
-
-    this.fastifyApp.get('/swagger.json', (request, reply: FastifyReply<ServerResponse>) => {
-      reply.send(this.swaggerSpec); 
+    this.fastifyApp.register(fastifySwagger, {
+      swagger: {
+        info: {
+          title: 'Recurrent Task Microservice - API Documentation',
+          version: '0.0.2',
+          description: 'This is the API documentation for the microservice managing recurrent tasks.'
+        },
+        consumes: ['application/json'],
+        produces: ['application/json'],
+        tags: CommonSchemaTags,
+        definitions: {
+          RecurrentTask: RecurrentTaskSchemaModels.RecurrentTask,
+          Label: LabelSchemaModels.Label
+        }
+      },
+      exposeRoute: true,
+      routePrefix: '/api-docs'
     });
+
+    this.fastifyApp.log.info('Swagger Docs is successfully generated and available at /api-docs.');
   }
 
   private setUpAPIRoutes(): void {
-    this.fastifyApp.register(fastifyStatic, {
-      root: path.join(__dirname, '..', 'public'),
-      redirect: true
-    });
-
     this.apiRoutes.initialize();
+  }
+
+  private setUpLogging(): void {
+    this.recurrentTaskLog = new RecurrentTaskLog(localPubsub, this.fastifyApp.log);
+    this.recurrentTaskLog.listen();
+
+    this.labelLog = new LabelLog(localPubsub, this.fastifyApp.log);
+    this.labelLog.listen();
   }
 }
 
