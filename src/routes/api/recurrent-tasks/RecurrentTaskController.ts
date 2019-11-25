@@ -8,7 +8,7 @@ import CommonSchemaResponses from '@schemas/common/responses';
 import { TAGS } from '@schemas/common/tags';
 import RecurrentTaskModel from '@models/RecurrentTask';
 import NotFound404 from '@models/responses/NotFound404';
-import { searchRecurrentTasks } from '@services/recurrent-tasks/RecurrentTaskService';
+import RecurrentTaskService from '@services/recurrent-tasks/RecurrentTaskService';
 import { DEFAULT_USER } from '@constants/common';
 
 class RecurrentTaskController extends BaseController {
@@ -166,13 +166,26 @@ class RecurrentTaskController extends BaseController {
     if (limit) searchRequest.limit = Number(limit);
     if (sort) searchRequest.sort = sort.split(',');
 
-    const recurrentTasks = await searchRecurrentTasks(searchRequest);
+    const recurrentTasks = await RecurrentTaskService.searchRecurrentTasks(searchRequest);
 
     reply.send(recurrentTasks);
   }
 
-  private getRecurrentTasksByUserId(request: FastifyRequest, reply: FastifyReply<ServerResponse>): void {
-    reply.send({ message: 'It has not been implemented yet.' });
+  private async getRecurrentTasksByUserId(request: FastifyRequest, reply: FastifyReply<ServerResponse>): Promise<any> {
+    const { userId, start, finish, due, status } = request.query;
+
+    console.log('status', status);
+
+    const options: any = {};
+
+    if (start) options.start = start;
+    if (finish) options.finish = finish;
+    if (due) options.due = due;
+    if (status) options.status = status;
+
+    const recurrentTasks = await RecurrentTaskService.getRecurrentTasksByUserId(userId, options);
+
+    reply.send(recurrentTasks);
   }
 }
 

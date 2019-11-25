@@ -26,6 +26,14 @@ const SearchRecurrentTaskRequestBody = {
     doers: CommonSchemaModels.ListOfUserEmails,
     departments: CommonSchemaModels.ListOfDepartmentNames,
     reviewers: CommonSchemaModels.ListOfUserEmails,
+    start: {
+      type: 'string',
+      format: 'date-time'
+    },
+    finish: {
+      type: 'string',
+      format: 'date-time'
+    },
     status: {
       type: 'array',
       items: RecurrentTaskSchemaModels.RecurrentTaskStatus
@@ -43,6 +51,18 @@ const GetRecurrentTasksByUserIdQueryParams = {
       type: 'string',
       example: '73936b96-03c1-4544-a858-a39deb469576'
     },
+    start: {
+      type: 'string',
+      format: 'date-time'
+    },
+    finish: {
+      type: 'string',
+      format: 'date-time'
+    },
+    due: {
+      type: 'string',
+      format: 'date-time'
+    }
   }
 };
 
