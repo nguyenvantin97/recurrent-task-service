@@ -31,7 +31,7 @@ class App {
   }
 
   private configPreRouteMiddlewares(): void {
-
+    this.fastifyApp.register(require('fastify-cors'));
   }
 
   private configPostRouteMiddlewares(): void {
@@ -57,7 +57,7 @@ class App {
       swagger: {
         info: {
           title: 'Recurrent Task Microservice - API Documentation',
-          version: '0.0.2',
+          version: '0.1.0',
           description: 'This is the API documentation for the microservice managing recurrent tasks.'
         },
         consumes: ['application/json'],
